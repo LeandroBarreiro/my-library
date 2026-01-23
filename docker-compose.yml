@@ -1,0 +1,60 @@
+version: "3.9" 
+# Versão do formato do docker-compose.
+# Não é a versão do Docker nem do MySQL.
+
+services:
+  mysql:
+    image: mysql:8.0
+    # Usa a imagem oficial do MySQL, versão 8.0
+    # Essa imagem é Linux, mas roda normal no Windows via Docker Desktop.
+
+    container_name: drizzle-mysql
+    # Nome fixo do container.
+    # Evita aquele nome aleatório feio que o Docker cria.
+
+    restart: unless-stopped
+    # Se o container cair, ele sobe de novo automaticamente,
+    # exceto se você parar manualmente.
+
+    ports:
+      - "3306:3306"
+      # Porta do host (Windows) : porta do container
+      # DBeaver, Drizzle e qualquer app acessam via localhost:3306
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      # Senha do usuário root (use só localmente)
+
+      MYSQL_DATABASE: app_db
+      # Banco que será criado automaticamente na primeira inicialização
+
+      MYSQL_USER: app_user
+      # Usuário da aplicação (NÃO use root no código)
+
+      MYSQL_PASSWORD: app_password
+      # Senha do usuário da aplicação
+
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+      # Garante que ninguém suba MySQL sem senha
+
+    command:
+      [
+        "--default-authentication-plugin=mysql_native_password",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci"
+      ]
+      # mysql_native_password:
+      # evita o erro "Public Key Retrieval is not allowed"
+      #
+      # utf8mb4:
+      # suporte completo a Unicode (emoji, acentos, etc)
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Volume persistente:
+      # os dados NÃO são apagados quando o container morre
+
+volumes:
+  mysql_data:
+    # Volume gerenciado pelo Docker
+    # Fica fora do container, sobrevive a rebuilds
