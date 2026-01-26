@@ -44,7 +44,12 @@ export const bookAuthorsTable = mysqlTable(
       .notNull()
       .references(() => authorsTable.id, { onDelete: "cascade" }),
   },
-  (table) => ({
-    pk: primaryKey({ columns: [table.bookId, table.authorId] }),
-  })
+  (table) => [ primaryKey({ name: "pk_book_authors", columns: [table.bookId, table.authorId] })],
 );
+
+export const userBooks = mysqlTable(
+  "user_books",
+  {
+    bookId: varchar("book_id", { length: 50}).notNull().references(() => booksTable.id, )
+  }
+); 
