@@ -123,7 +123,7 @@ export const loanBooks = mysqlTable(
       .notNull()
       .references(() => borrowers.id, { onDelete: "cascade" }),
     loanStart: date("loan_started_at", { mode: "string" }).notNull(),
-dueAt: date("due_at", { mode: "string" }).notNull(),
+    dueAt: date("due_at", { mode: "string" }).notNull(),
     returnedAt: date("returned_at", { mode: "string" }),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
