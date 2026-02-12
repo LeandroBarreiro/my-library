@@ -136,10 +136,8 @@ export const loanBooks = mysqlTable(
   },
   (t) => [
    uniqueIndex("uq_loan_active_user_book").on(t.userBookId, t.isActive),
-
     index("idx_loan_user_active").on(t.userId, t.isActive),
     index("idx_loan_borrower_active").on(t.borrowerId, t.isActive),
-
     index("idx_loan_userbook").on(t.userBookId),
   ]
 );
