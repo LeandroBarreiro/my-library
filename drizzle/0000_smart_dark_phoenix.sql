@@ -41,9 +41,9 @@ CREATE TABLE `loan_books` (
 	`returned_at` date,
 	`created_at` timestamp NOT NULL DEFAULT (now()),
 	`updated_at` timestamp NOT NULL DEFAULT (now()),
-	`is_active` boolean NOT NULL DEFAULT true,
+	`active_user_book_id` varchar(50) GENERATED ALWAYS AS ((IF(`returned_at` IS NULL, `user_book_id`, NULL))) VIRTUAL,
 	CONSTRAINT `loan_books_id` PRIMARY KEY(`id`),
-	CONSTRAINT `uq_loan_active_user_book` UNIQUE(`user_book_id`,`is_active`)
+	CONSTRAINT `uq_active_loan_per_user_book` UNIQUE(`active_user_book_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `user_books` (
@@ -77,6 +77,6 @@ ALTER TABLE `loan_books` ADD CONSTRAINT `loan_books_borrower_id_borrowers_id_fk`
 ALTER TABLE `user_books` ADD CONSTRAINT `user_books_book_id_books_id_fk` FOREIGN KEY (`book_id`) REFERENCES `books`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `user_books` ADD CONSTRAINT `user_books_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX `idx_borrower_user` ON `borrowers` (`user_id`);--> statement-breakpoint
-CREATE INDEX `idx_loan_user_active` ON `loan_books` (`user_id`,`is_active`);--> statement-breakpoint
-CREATE INDEX `idx_loan_borrower_active` ON `loan_books` (`borrower_id`,`is_active`);--> statement-breakpoint
+CREATE INDEX `idx_loan_books_user_id` ON `loan_books` (`user_id`);--> statement-breakpoint
+CREATE INDEX `idx_loan_books_borrower_id` ON `loan_books` (`borrower_id`);--> statement-breakpoint
 CREATE INDEX `idx_loan_userbook` ON `loan_books` (`user_book_id`);

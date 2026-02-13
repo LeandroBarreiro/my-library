@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "45d17cc9-a408-46b2-96dd-5abe54f22e77",
+  "id": "f2668d84-d24d-482d-a017-871af701ffc4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "authors": {
@@ -310,37 +310,37 @@
           "autoincrement": false,
           "default": "(now())"
         },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
+        "active_user_book_id": {
+          "name": "active_user_book_id",
+          "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false,
-          "default": true
+          "generated": {
+            "as": "(IF(`returned_at` IS NULL, `user_book_id`, NULL))",
+            "type": "virtual"
+          }
         }
       },
       "indexes": {
-        "uq_loan_active_user_book": {
-          "name": "uq_loan_active_user_book",
+        "uq_active_loan_per_user_book": {
+          "name": "uq_active_loan_per_user_book",
           "columns": [
-            "user_book_id",
-            "is_active"
+            "active_user_book_id"
           ],
           "isUnique": true
         },
-        "idx_loan_user_active": {
-          "name": "idx_loan_user_active",
+        "idx_loan_books_user_id": {
+          "name": "idx_loan_books_user_id",
           "columns": [
-            "user_id",
-            "is_active"
+            "user_id"
           ],
           "isUnique": false
         },
-        "idx_loan_borrower_active": {
-          "name": "idx_loan_borrower_active",
+        "idx_loan_books_borrower_id": {
+          "name": "idx_loan_books_borrower_id",
           "columns": [
-            "borrower_id",
-            "is_active"
+            "borrower_id"
           ],
           "isUnique": false
         },

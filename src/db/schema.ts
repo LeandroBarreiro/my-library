@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { mysqlEnum, timestamp } from "drizzle-orm/mysql-core";
 import { year } from "drizzle-orm/mysql-core";
 import { primaryKey } from "drizzle-orm/mysql-core";
@@ -116,7 +117,7 @@ export const loanBooks = mysqlTable(
     userBookId: varchar("user_book_id", { length: 50 })
       .notNull()
       .references(() => userBooks.id, { onDelete: "cascade" }),
-      userId: varchar("user_id", { length: 50 })
+    userId: varchar("user_id", { length: 50 })
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
     borrowerId: varchar("borrower_id", { length: 50 })
@@ -132,15 +133,21 @@ export const loanBooks = mysqlTable(
       .defaultNow()
       .notNull()
       .$onUpdate(() => new Date().toISOString()),
-    isActive: boolean("is_active").default(true).notNull()  
+    activeUserBookId: varchar("active_user_book_id", { length: 50 })
+      .generatedAlwaysAs(
+        sql`(IF(\`returned_at\` IS NULL, \`user_book_id\`, NULL))`,
+        { mode: "virtual" }
+      ),  
   },
   (t) => [
-   uniqueIndex("uq_loan_active_user_book").on(t.userBookId, t.isActive),
-    index("idx_loan_user_active").on(t.userId, t.isActive),
-    index("idx_loan_borrower_active").on(t.borrowerId, t.isActive),
+    uniqueIndex("uq_active_loan_per_user_book").on(t.activeUserBookId),
+    index("idx_loan_books_user_id").on(t.userId),
+    index("idx_loan_books_borrower_id").on(t.borrowerId),
     index("idx_loan_userbook").on(t.userBookId),
   ]
 );
+
+
 
 
 

@@ -4,7 +4,8 @@
   "description": "BackEnd-my-Library",
   "main": "src/server.ts",
   "scripts": {
-    "start": "tsx watch src/server.ts"
+    "start": "tsx watch src/server.ts",
+     "seed": "tsx src/db/seed-Erica.ts"
   },
   "author": "Leandro Barreiro",
   "license": "ISC",
